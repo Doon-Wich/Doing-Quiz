@@ -6,6 +6,7 @@ import './styles/global.scss'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import User from '../src/components/User/User';
 import Admin from '../src/components/Admin/Admin';
+import Login from './../src/components/Auth/Login'
 import {
   BrowserRouter,
   Routes,
@@ -28,6 +29,7 @@ root.render(
         <Route path='manage-users' element={<ManageUser />} />
       </Route>
 
+      <Route path='/login' element={<Login />} />
     </Routes>
   </BrowserRouter>
 

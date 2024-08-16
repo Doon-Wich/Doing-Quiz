@@ -1,0 +1,50 @@
+.login-container {
+    .header {
+        height: 45px;
+        text-align: right;
+    }
+
+    .title {
+        text-align: center;
+        font-size: 30px;
+        font-weight: 500;
+        padding: 20px 0;
+    }
+
+    .welcome {
+        text-align: center;
+        font-size: 25px;
+        font-weight: 200;
+        padding: 20px 0;
+    }
+
+    .content-form {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        gap: 30px;
+
+        .form-group {
+            width: 50%;
+
+            input {
+                border: solid 1px rgba(0, 0, 0, 0.4);
+                border-radius: 4px;
+            }
+        }
+
+        .btn-login {
+            width: 50%;
+
+            button {
+                background-color: black;
+                color: white;
+                border-radius: 4px;
+                width: 100%;
+                height: 40px;
+            }
+        }
+
+
+    }
+}
