@@ -111,9 +111,7 @@ const ManageUser = (props) => {
             <ModalDeleteUser
                 show={showModalDeleteUser}
                 setShow={setShowModalDeleteUser}
-                email={dataUpdate.email}
                 dataDelete={dataDelete}
-                fetchListUsers={fetchListUsers}
                 fetchListUsersWithPaginate={fetchListUsersWithPaginate}
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}

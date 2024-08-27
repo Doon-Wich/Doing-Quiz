@@ -40,6 +40,7 @@ const ModalUpdateUser = (props) => {
             }
 
         }
+
     }, [dataUpdate]);
 
     const handleUploadImage = (event) => {
@@ -83,6 +84,7 @@ const ModalUpdateUser = (props) => {
             toast.error(data.EM);
         }
     }
+
 
     return (
         <>

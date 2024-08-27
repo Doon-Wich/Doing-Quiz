@@ -7,13 +7,14 @@ import { toast } from 'react-toastify';
 
 const ModalDeleteUser = (props) => {
 
-    const { show, setShow, email, dataDelete, fetchListUsers } = props
+    const { show, setShow, dataDelete } = props
 
     const handleClose = () => setShow(false);
 
     const handleSubmitDeleteUser = async () => {
         console.log(dataDelete.id)
         let data = await deleteUser(dataDelete.id)
+        console.log(data)
         if (data && data.EC === 0) {
             toast.success("Delete participant succeed");
             handleClose();
@@ -37,7 +38,9 @@ const ModalDeleteUser = (props) => {
                 <Modal.Header closeButton>
                     <Modal.Title>Confirm Delete the User?</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Are you sure to delete this user. email:  <b>{dataDelete.email}</b> </Modal.Body>
+                <Modal.Body>Are you sure to delete this user. email:  <b>{
+                    dataDelete && dataDelete.email ? dataDelete.email : ""
+                }</b> </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
                         Cancel
