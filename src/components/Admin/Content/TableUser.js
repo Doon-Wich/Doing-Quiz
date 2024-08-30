@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import './../Content/Quiz/ManageQuiz.scss'
 
 const TableUser = (props) => {
 

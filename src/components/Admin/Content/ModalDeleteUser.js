@@ -12,7 +12,6 @@ const ModalDeleteUser = (props) => {
     const handleClose = () => setShow(false);
 
     const handleSubmitDeleteUser = async () => {
-        console.log(dataDelete.id)
         let data = await deleteUser(dataDelete.id)
         console.log(data)
         if (data && data.EC === 0) {

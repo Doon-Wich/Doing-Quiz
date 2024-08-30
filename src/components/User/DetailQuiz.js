@@ -137,7 +137,7 @@ const DetailQuiz = (props) => {
                 })
                 setIsShowModalResult(true)
             } else {
-
+                alert("something wrong ............")
             }
         }
     }

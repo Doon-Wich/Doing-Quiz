@@ -12,10 +12,14 @@
 
         .admin-header {
             height: 40px;
-            border: 1px solid green;
+            margin-bottom: 20px;
         }
 
-        .admin-main {}
+        .admin-main {
+            height: calc(100vh - 50px);
+
+        }
+
 
         .fabar {
             margin: 20px;
@@ -54,4 +58,8 @@
             color: #dee2ec;
         }
     }
+}
+
+body {
+    overflow: hidden;
 }

@@ -29,7 +29,7 @@ const HomePage = () => {
                 </div>
                 <div className='homepage-button'>
                     {isAuthenticated === true ?
-                        <button onClick={() => nagivate('/users')}>Doing Quiz Now</button>
+                        <button onClick={() => nagivate('/users')} className='btn btn-primary'>Doing Quiz Now</button>
                         :
                         <Button onClick={() => nagivate('/login')} className='btn-getstarted'>Get started-it's free</Button>
                     }
