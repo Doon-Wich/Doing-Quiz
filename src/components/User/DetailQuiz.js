@@ -6,6 +6,7 @@ import './../User/DetailQuiz.scss'
 import Question from './Question';
 import { set } from 'nprogress';
 import ModalResult from './ModalResult';
+import RightContent from './Content/RightContent';
 
 const DetailQuiz = (props) => {
     const params = useParams();
@@ -89,19 +90,7 @@ const DetailQuiz = (props) => {
 
 
     const handleFinishQuiz = async () => {
-        // {
-        //     "quizId": 1,
-        //     "answers": [
-        //         { 
-        //             "questionId": 1,
-        //             "userAnswerId": [3]
-        //         },
-        //         { 
-        //             "questionId": 2,
-        //             "userAnswerId": [6]
-        //         }
-        //     ]
-        // }
+
         let payload = {
             quizId: +quizId,
             answers: []
@@ -177,7 +166,11 @@ const DetailQuiz = (props) => {
                 </div>
             </div>
             <div className='right-content'>
-                countdown
+                <RightContent
+                    dataQuiz={dataQuiz}
+                    handleFinishQuiz={handleFinishQuiz}
+                    setIndex={setIndex}
+                />
             </div>
             <ModalResult
                 show={isShowModalResult}

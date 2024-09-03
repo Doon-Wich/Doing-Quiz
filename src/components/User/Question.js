@@ -1,7 +1,11 @@
 import _ from "lodash";
 import './../User/DetailQuiz.scss'
+import Lightbox from "yet-another-react-lightbox";
+import { useEffect, useState } from 'react';
 
 const Question = (props) => {
+    const [isPreviewImage, setIsPreviewImage] = useState(false);
+
     const { data, index } = props
     if (_.isEmpty(data)) {
         return (
@@ -18,8 +22,29 @@ const Question = (props) => {
         <>
             {data.image ?
                 <div className="q-image">
-                    <img src={`data:image/jpeg;base64, ${data.image}`}></img>
-                </div>
+                    <img
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setIsPreviewImage(true)}
+                        src={`data:image/jpeg;base64, ${data.image}`}
+                    ></img>
+                    {isPreviewImage === true &&
+                        <Lightbox
+                            open={isPreviewImage}
+                            close={() => (setIsPreviewImage(false), console.log('adu'))}
+                            slides={[
+                                {
+                                    src: `data:image/jpeg;base64, ${data.image}`
+                                }
+                            ]}
+                            render={{
+                                buttonPrev: () => null,
+                                buttonNext: () => null,
+                            }}
+
+                        >
+                        </Lightbox>
+                    }
+                </div >
                 :
                 <div className="q-image">
 

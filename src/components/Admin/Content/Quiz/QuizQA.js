@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import './../Question/Questions.scss'
+import './../Quiz/QuizQA.scss'
 import Select from 'react-select';
 import { FiPlusSquare } from "react-icons/fi";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
@@ -9,11 +9,13 @@ import _ from 'lodash';
 import Lightbox from "yet-another-react-lightbox";
 import {
     getAllQuizForAdmin, postCreateNewQuestionForQuiz,
-    postCreateNewAnswerForQuestion
+    postCreateNewAnswerForQuestion,
+    getQuizWithQA,
+    postUpsertQA
 } from "../../../../services/apiService";
 import { toast } from "react-toastify";
 
-const Questions = (props) => {
+const QuizQA = (props) => {
     const initQuestions = [
         {
             id: uuidv4(),
@@ -31,24 +33,56 @@ const Questions = (props) => {
     ];
 
     const [questions, setQuestions] = useState(initQuestions)
-
-    const [selectedQuiz, setSelectedQuiz] = useState({});
-
     const [isPreviewImage, setIsPreviewImage] = useState(false);
-
     const [dataImagePreview, serDataImagePreview] = useState({
         url: ''
     });
 
+    const [selectedQuiz, setSelectedQuiz] = useState({});
+
+
     const [listQuiz, setListQuiz] = useState([]);
-
-    useEffect(() => {
-
-    }, [])
 
     useEffect(() => {
         fetchListQuiz();
     }, [])
+
+    useEffect(() => {
+        if (selectedQuiz && selectedQuiz.value) {
+            fetchQuizWithQA();
+        }
+
+    }, [selectedQuiz])
+
+    // return a promise that resolves with a File instance
+    function urltoFile(url, filename, mimeType) {
+        return (fetch(url)
+            .then(function (res) { return res.arrayBuffer(); })
+            .then(function (buf) { return new File([buf], filename, { type: mimeType }); })
+        );
+    }
+
+    //Usage example:
+
+    const fetchQuizWithQA = async () => {
+        let res = await getQuizWithQA(selectedQuiz.value);
+        console.log(res);
+        if (res && res.EC === 0) {
+            // convert base64 to FileObj
+            let newQA = [];
+            for (let i = 0; i < res.DT.qa.length; i++) {
+                let q = res.DT.qa[i];
+                if (q.imageFile) {
+                    q.imageName = `Question-${q.id}.png`;
+                    q.imageFile =
+                        await urltoFile(`data:image/png;base64,${q.imageFile}`, `Question-${q.id}.png`, 'image/png');
+                }
+                newQA.push(q);
+            }
+            setQuestions(newQA);
+        }
+
+    }
 
     const fetchListQuiz = async () => {
         let res = await getAllQuizForAdmin();
@@ -127,7 +161,6 @@ const Questions = (props) => {
         if (index > -1 && event.target && event.target.files && event.target.files[0]) {
             questionsClone[index].imageFile = event.target.files[0];
             questionsClone[index].imageName = event.target.files[0].name;
-            console.log(questionsClone);
             setQuestions(questionsClone);
         }
     }
@@ -143,8 +176,6 @@ const Questions = (props) => {
             if (type === 'INPUT') {
                 questionsClone[qindex].answers[aindex].description = questionsClone[qindex].answers[aindex].description = value;
             }
-
-            console.log(questionsClone);
             setQuestions(questionsClone);
         }
     }
@@ -197,24 +228,32 @@ const Questions = (props) => {
             return;
         }
 
-        //submit questions
-        for (const question of questions) {
-            const q = await postCreateNewQuestionForQuiz(
-                +selectedQuiz.value,
-                question.description,
-                question.imageFile);
-            for (const answer of question.answers) {
-                await postCreateNewAnswerForQuestion(
-                    answer.description,
-                    answer.isCorrect,
-                    q.DT.id
-                );
+        let questionsClone = _.cloneDeep(questions);
+        for (let i = 0; i < questionsClone.length; i++) {
+            if (questionsClone[i].imageFile) {
+                questionsClone[i].imageFile = await toBase64(questionsClone[i].imageFile)
             }
         }
+        //submit questions
+        let res = await postUpsertQA({
+            quizId: selectedQuiz.value,
+            questions: questionsClone
+        });
 
-        toast.success('Create questions and answer succeed');
-        setQuestions(initQuestions);
+        if (res && res.EC === 0) {
+            toast.success(res.EM);
+            fetchQuizWithQA();
+        }
+
+        // setQuestions(initQuestions);
     }
+
+    const toBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+    });
 
     const handlePreviewImage = (questionId) => {
         let questionsClone = _.cloneDeep(questions);
@@ -229,9 +268,6 @@ const Questions = (props) => {
 
     return (
         <div className="questions-container">
-            <div className="title">
-                Manage Question
-            </div>
             <div className='add-new-questions'>
                 <div className='col-6 form-group'>
                     <label className='mb-1'>Select Quiz:</label>
@@ -271,7 +307,8 @@ const Questions = (props) => {
                                     <span>
                                         {question.imageFile ?
                                             <span style={{ cursor: "pointer" }}
-                                                onClick={() => handlePreviewImage(question.id)}>
+                                                onClick={() => handlePreviewImage(question.id)}
+                                            >
                                                 {question.imageName}
                                             </span>
                                             :
@@ -340,7 +377,7 @@ const Questions = (props) => {
                 {isPreviewImage === true &&
                     <Lightbox
                         open={isPreviewImage}
-                        close={() => (setIsPreviewImage(false), console.log('adu'))}
+                        close={() => (setIsPreviewImage(false))}
                         slides={[
                             {
                                 src: dataImagePreview.url,
@@ -352,7 +389,6 @@ const Questions = (props) => {
                         }}
 
                     >
-                        {console.log(dataImagePreview.url)}
                     </Lightbox>
                 }
 
@@ -361,4 +397,4 @@ const Questions = (props) => {
     )
 }
 
-export default Questions;
+export default QuizQA;
